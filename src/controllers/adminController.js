@@ -114,8 +114,28 @@ exports.getAllBlogs = async (req, res) => {
 
 exports.updateBlog = async (req, res) => {
 	try {
+		//destructured feild from req.body
+
 		const { title, content, category } = req.body;
+
+		//destructured feild from req.params
+
 		const { _id } = req.params;
+
+		//check blog exist or not
+
+		const blogFind = await Blog.findOne({
+			_id: _id,
+		});
+
+		//if blog not found then return with error message
+
+		if (!blogFind) {
+			return res.json({
+				success: false,
+				message: 'blog is not exist',
+			});
+		}
 
 		//update blogs
 
@@ -146,7 +166,24 @@ exports.updateBlog = async (req, res) => {
 
 exports.deleteBlog = async (req, res) => {
 	try {
+		//destructured feild from req.params
+
 		const { _id } = req.params;
+
+		//check blog exist or not
+
+		const blogFind = await Blog.findOne({
+			_id: _id,
+		});
+
+		//if blog not found then return with error message
+
+		if (!blogFind) {
+			return res.json({
+				success: false,
+				message: 'blog is not exist',
+			});
+		}
 
 		//delete blogs
 
