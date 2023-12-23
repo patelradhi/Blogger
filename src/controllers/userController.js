@@ -144,10 +144,11 @@ exports.logIn = async (req, res) => {
 exports.blogCreate = async (req, res) => {
 	try {
 		//destructured feild from req.body
+		const { title, content, category } = req.body;
+
+		//take user objectId from req.user(we added decode token into req.user)
 
 		const userid = req.user.id;
-
-		const { title, content, category } = req.body;
 
 		//validation
 
@@ -187,8 +188,10 @@ exports.blogCreate = async (req, res) => {
 
 exports.getAllBlogs = async (req, res) => {
 	try {
+		//check blogs are exist or not
 		const allBlogs = await Blog.find().sort({ createdAt: -1 });
 
+		//if not found any blogs then return with error message
 		if (allBlogs.length < 0) {
 			return res.json({
 				success: false,
@@ -201,6 +204,7 @@ exports.getAllBlogs = async (req, res) => {
 		res.status(200).json({
 			success: true,
 			blogs: allBlogs,
+			message: 'Blog fetched successfully',
 		});
 	} catch (error) {
 		console.log('Error', error);
@@ -215,10 +219,33 @@ exports.getAllBlogs = async (req, res) => {
 
 exports.updateBlog = async (req, res) => {
 	try {
+		//destructured feild from req.body
+
 		const { title, content, category } = req.body;
+
+		//destructured feild from req.params
+
 		const { _id } = req.params;
 
+		//take user objectId from req.user(we added decode token into req.user)
+
 		const userId = req.user.id;
+
+		//check blog exist or not
+
+		const blogFind = await Blog.findOne({
+			_id: _id,
+			author: userId,
+		});
+
+		//if blog not found then return with error message
+
+		if (!blogFind) {
+			return res.json({
+				success: false,
+				message: 'you have not any blog',
+			});
+		}
 
 		//update blogs
 
@@ -261,14 +288,33 @@ exports.updateBlog = async (req, res) => {
 
 exports.deleteBlog = async (req, res) => {
 	try {
+		//destructured feild from req.params
+
 		const { _id } = req.params;
+
+		//take user objectId from req.user(we added decode token into req.user)
 
 		const userId = req.user.id;
 
-		//update blogs
+		//check blog exist or not
+
+		const blogFind = await Blog.findOne({
+			_id: _id,
+			author: userId,
+		});
+
+		//if blog not found then return with error message
+
+		if (!blogFind) {
+			return res.json({
+				success: false,
+				message: 'you have not any blog',
+			});
+		}
+
+		//delete blogs
 
 		const ans = await Blog.deleteOne({ _id, author: userId });
-		console.log(ans);
 
 		// If there is no deletion found then this error occured.
 
