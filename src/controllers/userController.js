@@ -18,7 +18,7 @@ exports.signUp = async (req, res) => {
 		//validation
 
 		if (!userName || !email || !password) {
-			return res.json({
+			res.status(400).json({
 				success: false,
 				message: 'Full fill all the  details',
 			});
@@ -29,7 +29,7 @@ exports.signUp = async (req, res) => {
 		const existUser = await User.findOne({ email });
 
 		if (existUser) {
-			return res.json({
+			res.status(400).json({
 				success: false,
 				message: 'User allready exist',
 			});
@@ -57,7 +57,7 @@ exports.signUp = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error while creating user',
 		});
@@ -75,7 +75,7 @@ exports.logIn = async (req, res) => {
 		//validation
 
 		if (!email || !password) {
-			return res.json({
+			res.status(400).json({
 				success: false,
 				message: 'Full fill all details',
 			});
@@ -86,7 +86,7 @@ exports.logIn = async (req, res) => {
 		const existUser = await User.findOne({ email, role: 'user' });
 
 		if (!existUser) {
-			return res.json({
+			res.status(400).json({
 				success: false,
 				message: 'User not exist',
 			});
@@ -116,23 +116,25 @@ exports.logIn = async (req, res) => {
 				httpOnly: true,
 			};
 
-			res.cookie('token', token, Options).json({
-				success: true,
-				data: {
-					...existUser._doc,
-					token,
-				},
-				message: ' User login successfully',
-			});
+			res.status(200)
+				.cookie('token', token, Options)
+				.json({
+					success: true,
+					data: {
+						...existUser._doc,
+						token,
+					},
+					message: ' User login successfully',
+				});
 		} else {
-			res.json({
+			res.status(400).json({
 				success: false,
 				message: ' User not login successfully',
 			});
 		}
 	} catch (error) {
 		console.log(error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error while login',
 		});
@@ -153,7 +155,7 @@ exports.blogCreate = async (req, res) => {
 		//validation
 
 		if (!title || !content) {
-			return res.json({
+			res.status(400).json({
 				success: false,
 				message: 'Full fill all details',
 			});
@@ -177,7 +179,7 @@ exports.blogCreate = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error while creating blog',
 		});
@@ -193,7 +195,7 @@ exports.getAllBlogs = async (req, res) => {
 
 		//if not found any blogs then return with error message
 		if (allBlogs.length < 0) {
-			return res.json({
+			res.status(400).json({
 				success: false,
 				message: 'There  are no any blogs yet',
 			});
@@ -208,7 +210,7 @@ exports.getAllBlogs = async (req, res) => {
 		});
 	} catch (error) {
 		console.log('Error', error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error while get all blogs',
 		});
@@ -241,7 +243,7 @@ exports.updateBlog = async (req, res) => {
 		//if blog not found then return with error message
 
 		if (!blogFind) {
-			return res.json({
+			res.status(400).json({
 				success: false,
 				message: 'you have not any blog',
 			});
@@ -263,7 +265,7 @@ exports.updateBlog = async (req, res) => {
 		// If there is no updatation found then this error occured.
 
 		if (ans.modifiedCount == 0) {
-			return res.json({
+			res.status(400).json({
 				success: false,
 				message: "You can not update other's blog",
 			});
@@ -271,13 +273,13 @@ exports.updateBlog = async (req, res) => {
 
 		//response
 
-		res.json({
+		res.status(200).json({
 			success: true,
 			message: ' Blog updated successfully',
 		});
 	} catch (error) {
 		console.log(error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error in updating blog by admin ',
 		});
@@ -306,7 +308,7 @@ exports.deleteBlog = async (req, res) => {
 		//if blog not found then return with error message
 
 		if (!blogFind) {
-			return res.json({
+			res.status(400).json({
 				success: false,
 				message: 'you have not any blog',
 			});
@@ -319,7 +321,7 @@ exports.deleteBlog = async (req, res) => {
 		// If there is no deletion found then this error occured.
 
 		if (ans.deletedCount == 0) {
-			return res.json({
+			res.status(400).json({
 				success: false,
 				message: "You can not delete other's blog",
 			});
@@ -327,13 +329,13 @@ exports.deleteBlog = async (req, res) => {
 
 		//response
 
-		res.json({
+		res.status(200).json({
 			success: true,
 			message: ' Blog deleted successfully',
 		});
 	} catch (error) {
 		console.log(error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error in deleting blog by user ',
 		});
@@ -344,13 +346,13 @@ exports.deleteBlog = async (req, res) => {
 
 exports.logout = async (req, res) => {
 	try {
-		res.clearCookie('token').json({
+		res.status(200).clearCookie('token').json({
 			success: true,
 			message: 'Logout successfully',
 		});
 	} catch (error) {
 		console.log(error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error in logout',
 		});

@@ -3,7 +3,6 @@
 const User = require('../model/user');
 const Blog = require('../model/blog');
 const jwt = require('jsonwebtoken');
-const { hashPassword } = require('../utils');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 
@@ -18,7 +17,7 @@ exports.logIn = async (req, res) => {
 		//validation
 
 		if (!email || !password) {
-			return res.json({
+			return res.status(400).json({
 				success: false,
 				message: 'Full fill all details',
 			});
@@ -26,10 +25,10 @@ exports.logIn = async (req, res) => {
 
 		//check user exist or not
 
-		const existUser = await User.findOne({ email, role: 'admin' }); //>>>doubt
+		const existUser = await User.findOne({ email, role: 'admin' });
 
 		if (!existUser) {
-			return res.json({
+			return res.status(400).json({
 				success: false,
 				message: 'Admin not exist',
 			});
@@ -59,14 +58,16 @@ exports.logIn = async (req, res) => {
 				httpOnly: true,
 			};
 
-			res.cookie('token', token, Options).json({
-				success: true,
-				data: {
-					...existUser._doc,
-					token,
-				},
-				message: ' Admin login successfully',
-			});
+			res.status(200)
+				.cookie('token', token, Options)
+				.json({
+					success: true,
+					data: {
+						...existUser._doc,
+						token,
+					},
+					message: ' Admin login successfully',
+				});
 		} else {
 			res.json({
 				success: false,
@@ -75,7 +76,7 @@ exports.logIn = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error while login',
 		});
@@ -89,7 +90,7 @@ exports.getAllBlogs = async (req, res) => {
 		const allBlogs = await Blog.find().sort({ createdAt: -1 });
 
 		if (allBlogs.length < 0) {
-			return res.json({
+			return res.status(400).json({
 				success: false,
 				message: 'There  are no any blogs yet',
 			});
@@ -103,7 +104,7 @@ exports.getAllBlogs = async (req, res) => {
 		});
 	} catch (error) {
 		console.log('Error', error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error while get all blogs',
 		});
@@ -131,7 +132,7 @@ exports.updateBlog = async (req, res) => {
 		//if blog not found then return with error message
 
 		if (!blogFind) {
-			return res.json({
+			return res.status(400).json({
 				success: false,
 				message: 'blog is not exist',
 			});
@@ -149,13 +150,13 @@ exports.updateBlog = async (req, res) => {
 
 		//response
 
-		res.json({
+		res.status(200).json({
 			success: true,
 			message: ' Blog updated successfully',
 		});
 	} catch (error) {
 		console.log(error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error in updating blog by admin ',
 		});
@@ -179,7 +180,7 @@ exports.deleteBlog = async (req, res) => {
 		//if blog not found then return with error message
 
 		if (!blogFind) {
-			return res.json({
+			return res.status(400).json({
 				success: false,
 				message: 'blog is not exist',
 			});
@@ -191,14 +192,14 @@ exports.deleteBlog = async (req, res) => {
 
 		//response
 
-		res.json({
+		res.status(200).json({
 			success: true,
 			message: ' Blog deleted successfully',
 			data: ans,
 		});
 	} catch (error) {
 		console.log(error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error in deleting blog by admin ',
 		});
@@ -209,13 +210,13 @@ exports.deleteBlog = async (req, res) => {
 
 exports.logout = async (req, res) => {
 	try {
-		res.clearCookie('token').json({
+		res.status(200).clearCookie('token').json({
 			success: true,
 			message: 'Logout successfully',
 		});
 	} catch (error) {
 		console.log(error);
-		res.json({
+		res.status(500).json({
 			success: false,
 			message: 'Found some error in logout',
 		});
