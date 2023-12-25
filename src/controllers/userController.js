@@ -75,7 +75,7 @@ exports.logIn = async (req, res) => {
 		//validation
 
 		if (!email || !password) {
-			res.status(400).json({
+			return res.status(400).json({
 				success: false,
 				message: 'Full fill all details',
 			});
@@ -86,7 +86,7 @@ exports.logIn = async (req, res) => {
 		const existUser = await User.findOne({ email, role: 'user' });
 
 		if (!existUser) {
-			res.status(400).json({
+			return res.status(400).json({
 				success: false,
 				message: 'User not exist',
 			});
@@ -127,7 +127,7 @@ exports.logIn = async (req, res) => {
 					message: ' User login successfully',
 				});
 		} else {
-			res.status(400).json({
+			return res.status(400).json({
 				success: false,
 				message: ' User not login successfully',
 			});
@@ -195,7 +195,7 @@ exports.getAllBlogs = async (req, res) => {
 
 		//if not found any blogs then return with error message
 		if (allBlogs.length < 0) {
-			res.status(400).json({
+			return res.status(400).json({
 				success: false,
 				message: 'There  are no any blogs yet',
 			});
@@ -243,7 +243,7 @@ exports.updateBlog = async (req, res) => {
 		//if blog not found then return with error message
 
 		if (!blogFind) {
-			res.status(400).json({
+			return res.status(400).json({
 				success: false,
 				message: 'you have not any blog',
 			});
@@ -265,7 +265,7 @@ exports.updateBlog = async (req, res) => {
 		// If there is no updatation found then this error occured.
 
 		if (ans.modifiedCount == 0) {
-			res.status(400).json({
+			return res.status(400).json({
 				success: false,
 				message: "You can not update other's blog",
 			});
@@ -308,7 +308,7 @@ exports.deleteBlog = async (req, res) => {
 		//if blog not found then return with error message
 
 		if (!blogFind) {
-			res.status(400).json({
+			return res.status(400).json({
 				success: false,
 				message: 'you have not any blog',
 			});
@@ -321,7 +321,7 @@ exports.deleteBlog = async (req, res) => {
 		// If there is no deletion found then this error occured.
 
 		if (ans.deletedCount == 0) {
-			res.status(400).json({
+			return res.status(400).json({
 				success: false,
 				message: "You can not delete other's blog",
 			});

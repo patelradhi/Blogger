@@ -69,7 +69,7 @@ exports.logIn = async (req, res) => {
 					message: ' Admin login successfully',
 				});
 		} else {
-			res.json({
+			return res.status(400).json({
 				success: false,
 				message: ' Admin not login successfully',
 			});
