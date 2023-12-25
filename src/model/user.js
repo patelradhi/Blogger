@@ -25,10 +25,6 @@ const userSchema = new mongoose.Schema(
 			enum: ['user', 'admin'],
 			default: 'user',
 		},
-		isActivated: {
-			type: Boolean,
-			default: true,
-		},
 	},
 	{
 		versionKey: false,

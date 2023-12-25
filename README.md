@@ -2,7 +2,7 @@
 
 Welcome to BLOGGING-SITE, a Node.js application designed to offer a seamless blogging platform for users and administrators alike. It leverages a robust schema catering to both administrative and user roles, coupled with comprehensive functionalities to ensure a rich blogging experience.
 
-# Key Fetures
+# Key Features
 
 ## Users Features
 
@@ -77,10 +77,6 @@ const userSchema = new mongoose.Schema(
 			enum: ['user', 'admin'],
 			default: 'user',
 		},
-		isActivated: {
-			type: Boolean,
-			default: true,
-		},
 	},
 	{
 		versionKey: false,
@@ -121,19 +117,19 @@ project-directory/
 └── routes/
     ├── adminRoutes.js
     │   - Admin Routes:
+    │     - POST /admin/login - Admin login
+    │     - GET /admin/logout - Admin logout
     │     - GET /admin/blog - Get all blogs
     │     - PUT /admin/blog/:id - Update a blog
     │     - DELETE /admin/blog/:id - Delete a blog
-    │     - POST /admin/login - Admin login
-    │     - GET /admin/logout - Admin logout
     │
     └── userRoutes.js
         - User Routes:
-          - POST /user/blog - Create a blog
-          - GET /user/blog - Get all blogs
-          - GET /user/blog/:id - Get a blog
-          - PUT /user/blog/:id - Update a blog
-          - DELETE /user/blog/:id - Delete a blog
+          - POST /user/signUp - User signUp
           - POST /user/login - User login
           - GET /user/logout - User logout
+          - POST /user/blog - Create a blog
+          - GET /user/blog - Get all blogs
+          - PUT /user/blog/:id - Update a blog
+          - DELETE /user/blog/:id - Delete a blog
 ```
